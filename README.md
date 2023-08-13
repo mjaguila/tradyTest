@@ -61,3 +61,7 @@ Please organize, design, test and document your code as if it were going into pr
 All the best and happy coding,
 
 The Trady Team
+
+### Postman documentation
+
+https://documenter.getpostman.com/view/11157404/2s9Xy5LpuT

@@ -64,8 +64,8 @@ class AccountController extends Controller
         $source = Account::find($request->get('source_account'));
         $destination = Account::find($request->get('destination_account'));
         $amount = $request->get('amount');
-        $source_balance = $this->balance($source->id);
-        if ($source_balance < $amount) {
+
+        if (!$this->enough_balance($source->id, $amount)) {
             return response()->json(['status' => 'error', 'data' => 'Insufficient balance']);
         }
 
@@ -82,12 +82,21 @@ class AccountController extends Controller
         return response()->json(['status' => 'success', 'data' => 'Transaction completed']);
     }
 
-    public function balance($id)
+    private function enough_balance($account, $amount)
     {
+        $credits = Movement::where('account_id', $account)->where('credit', '<>', 0)->get();
+        $debits = Movement::where('account_id', $account)->where('debit', '<>', 0)->get();
+        $balance = $credits->sum('credit') - $debits->sum('debit');
 
-        $credits = Movement::where('account_id', $id)->where('credit', '<>', 0)->get();
-        $debits = Movement::where('account_id', $id)->where('debit', '<>', 0)->get();
+        return $balance >= $amount;
+    }
 
-        return $credits->sum('credit') - $debits->sum('debit');
+    public function balance($account)
+    {
+        $credits = Movement::where('account_id', $account)->where('credit', '<>', 0)->get();
+        $debits = Movement::where('account_id', $account)->where('debit', '<>', 0)->get();
+        $balance = $credits->sum('credit') - $debits->sum('debit');
+
+        return response()->json(['status' => 'success', 'data' => $balance]);
     }
 }

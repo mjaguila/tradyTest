@@ -17,5 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('accounts/create', 'App\Http\Controllers\AccountController@store');
 Route::post('accounts/transfer', 'App\Http\Controllers\AccountController@transfer');
 Route::get('accounts/balance/{id}', 'App\Http\Controllers\AccountController@balance');
+Route::get('movements/history/{id}', 'App\Http\Controllers\MovementController@history');
+
 
 
